@@ -70,18 +70,25 @@ public class Controller {
             return ResponseEntity.badRequest().body("Missing externalBaseUrl");
         }
 
+        String regex = "[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\\-._~:/?#\\[\\]@!$&'()*+,;=]+";
+
         String url = externalBaseUrl + "/" + parameters;
 
-        RestTemplate restTemplate = new RestTemplate();
-        try {
-            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+        if (url.matches(regex)) {
 
-            MediaType mediaType = response.getHeaders().getContentType();
-            HttpStatus status = (HttpStatus) response.getStatusCode();
-            String responseBody = response.getBody();
-            return ResponseEntity.status(status).contentType(mediaType != null ? mediaType : MediaType.TEXT_PLAIN).body(responseBody);
-        } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.TEXT_PLAIN).body(e.getMessage());
+            RestTemplate restTemplate = new RestTemplate();
+            try {
+                ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+
+                MediaType mediaType = response.getHeaders().getContentType();
+                HttpStatus status = (HttpStatus) response.getStatusCode();
+                String responseBody = response.getBody();
+                return ResponseEntity.status(status).contentType(mediaType != null ? mediaType : MediaType.TEXT_PLAIN).body(responseBody);
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
