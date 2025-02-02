@@ -18,7 +18,7 @@ public class Controller {
 
     @GetMapping("/uuid")
     public String uuid() {
-        return "<!DOCTYPE html>" + "<html>" + "<head>" + "<body>" + "<h1>s2693586</h1>" + "</body>" + "</html>";
+        return "<!DOCTYPE html>" + "<html>" + "<body>" + "<h1>s2693586</h1>" + "</body>" + "</html>";
     }
 
     //valuemanager?key=keyToUse&value=valueToWrite
@@ -48,7 +48,7 @@ public class Controller {
         }
     }
 
-    @GetMapping({"/valuemanager/", "/valuemanager/{key}"})
+    @GetMapping({"/valuemanager", "/valuemanager/{key}"})
     public ResponseEntity<?> getValue(@PathVariable(value = "key", required = false) String key) {
         if (key == null || key.trim().isEmpty()) {
             return ResponseEntity.ok(store);
