@@ -48,8 +48,9 @@ public class Controller {
         }
     }
 
-    @GetMapping({"/valuemanager", "/valuemanager/{key}"})
+    @GetMapping({ "/valuemanager/","/valuemanager/{key}"})
     public ResponseEntity<?> getValue(@PathVariable(value = "key", required = false) String key) {
+//        System.out.println(key);
         if (key == null || key.trim().isEmpty()) {
             return ResponseEntity.ok(store);
         }
@@ -70,11 +71,11 @@ public class Controller {
             return ResponseEntity.badRequest().body("Missing externalBaseUrl");
         }
 
-        String regex = "[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\\-._~:/?#\\[\\]@!$&'()*+,;=]+";
+//        String regex = "[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\\-._~:/?#\\[\\]@!$&'()*+,;=]+";
 
         String url = externalBaseUrl + "/" + parameters;
 
-        if (url.matches(regex)) {
+//        if (url.matches(regex)) {
 
             RestTemplate restTemplate = new RestTemplate();
             try {
@@ -87,9 +88,9 @@ public class Controller {
             } catch (Exception e) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+//        } else {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+//        }
     }
 
 }
