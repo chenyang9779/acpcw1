@@ -18,7 +18,10 @@ public class Controller {
 
     @GetMapping("/uuid")
     public String uuid() {
-        return "<!DOCTYPE html>" + "<html>" + "<body>" + "<h1>s2693586</h1>" + "</body>" + "</html>";
+        return "<!DOCTYPE html>" + "<html>" + "<head>"+
+                "<meta charset='utf-8'>"+
+                "<title>Page title</title>"+
+                "</head> "+ "<body>" + "<h1>s2693586</h1>" + "</body>" + "</html>";
     }
 
     //valuemanager?key=keyToUse&value=valueToWrite
