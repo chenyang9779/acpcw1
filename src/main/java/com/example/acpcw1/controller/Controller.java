@@ -26,19 +26,54 @@ public class Controller {
 
     //valuemanager?key=keyToUse&value=valueToWrite
     @PostMapping("/valuemanager")
-    public ResponseEntity<Void> postValueManager1(@RequestParam(required = false) String key, @RequestParam(required = false) String value) {
-        if (key != null && value != null) {
-            store.put(key, value);
-            return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<Void> postValueManager1(@RequestParam String key, @RequestParam(required = false) String value) {
+        if (key == null || key.trim().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Return 404 if key is null or empty
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        if (value == null || value.trim().isEmpty()) {
+            store.put(key, null);
+        } else {
+            store.put(key, value);
+        }
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    //valuemanager/key/valueToWrite
+//    //valuemanager/key/valueToWrite
+//    @PostMapping("/valuemanager/{key}/{value}")
+//    public ResponseEntity<Void> postValueManager2(@PathVariable(required = false) String key, @PathVariable(required = false) String value) {
+//        if (key == null) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+//        }
+//        store.put(key, value);
+//        return ResponseEntity.status(HttpStatus.OK).build();
+//    }
+
     @PostMapping("/valuemanager/{key}/{value}")
-    public ResponseEntity<Void> postValueManager2(@PathVariable String key, @PathVariable String value) {
-        store.put(key, value);
+    public ResponseEntity<Void> postValueManager(@PathVariable String key, @PathVariable(required = false) String value) {
+        if (key == null || key.trim().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Return 404 if key is null or empty
+        }
+
+        // Store the key-value pair, allowing a null value
+        if (value == null || value.trim().isEmpty()) {
+            store.put(key, null);
+        }else{
+            store.put(key, value);
+        }
+
         return ResponseEntity.status(HttpStatus.OK).build();
+        // Return 200 OK
+    }
+
+    @PostMapping(path = {"/valuemanager/{key}", "/valuemanager/{key}/"})
+    public ResponseEntity<Void> postValueManagerWithNullValue(@PathVariable String key) {
+        if (key == null || key.trim().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Return 404 if key is null or empty
+        }
+
+        // Store the key with a null value
+        store.put(key, null);
+        return ResponseEntity.status(HttpStatus.OK).build(); // Return 200 OK
     }
 
     @DeleteMapping("/valuemanager/{key}")
@@ -51,7 +86,7 @@ public class Controller {
         }
     }
 
-    @GetMapping({ "/valuemanager/","/valuemanager/{key}"})
+    @GetMapping({ "/valuemanager", "/valuemanager/","/valuemanager/{key}"})
     public ResponseEntity<?> getValue(@PathVariable(value = "key", required = false) String key) {
 //        System.out.println(key);
         if (key == null || key.trim().isEmpty()) {
