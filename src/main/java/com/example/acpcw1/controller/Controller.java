@@ -38,16 +38,6 @@ public class Controller {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-//    //valuemanager/key/valueToWrite
-//    @PostMapping("/valuemanager/{key}/{value}")
-//    public ResponseEntity<Void> postValueManager2(@PathVariable(required = false) String key, @PathVariable(required = false) String value) {
-//        if (key == null) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-//        }
-//        store.put(key, value);
-//        return ResponseEntity.status(HttpStatus.OK).build();
-//    }
-
     @PostMapping("/valuemanager/{key}/{value}")
     public ResponseEntity<Void> postValueManager(@PathVariable String key, @PathVariable(required = false) String value) {
         if (key == null || key.trim().isEmpty()) {
@@ -88,7 +78,6 @@ public class Controller {
 
     @GetMapping({ "/valuemanager", "/valuemanager/","/valuemanager/{key}"})
     public ResponseEntity<?> getValue(@PathVariable(value = "key", required = false) String key) {
-//        System.out.println(key);
         if (key == null || key.trim().isEmpty()) {
             return ResponseEntity.ok(store);
         }
@@ -111,24 +100,39 @@ public class Controller {
 
 //        String regex = "[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\\-._~:/?#\\[\\]@!$&'()*+,;=]+";
 
-        String url = externalBaseUrl + "/" + parameters;
+        String url1 = externalBaseUrl + "/" + parameters;
+        String url2 = externalBaseUrl + "?" + parameters;
 
-//        if (url.matches(regex)) {
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> response1 = null;
+        ResponseEntity<String> response2 = null;
 
-            RestTemplate restTemplate = new RestTemplate();
-            try {
-                ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+        try{
+            response1 = restTemplate.getForEntity(url1, String.class);
 
-                MediaType mediaType = response.getHeaders().getContentType();
-                HttpStatus status = (HttpStatus) response.getStatusCode();
-                String responseBody = response.getBody();
-                return ResponseEntity.status(status).contentType(mediaType != null ? mediaType : MediaType.TEXT_PLAIN).body(responseBody);
-            } catch (Exception e) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-            }
-//        } else {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-//        }
+        } catch (Exception _) {
+        }
+        try{
+            response2 = restTemplate.getForEntity(url2, String.class);
+        }catch (Exception _) {}
+
+        if (response1 != null && response1.getStatusCode().is2xxSuccessful()) {
+            MediaType mediaType = response1.getHeaders().getContentType();
+            HttpStatus status = (HttpStatus) response1.getStatusCode();
+            String responseBody = response1.getBody();
+            return ResponseEntity.status(status)
+                    .contentType(mediaType != null ? mediaType : MediaType.TEXT_PLAIN)
+                    .body(responseBody);
+        } else if (response2 != null && response2.getStatusCode().is2xxSuccessful()) {
+            MediaType mediaType = response2.getHeaders().getContentType();
+            HttpStatus status = (HttpStatus) response2.getStatusCode();
+            String responseBody = response2.getBody();
+            return ResponseEntity.status(status)
+                    .contentType(mediaType != null ? mediaType : MediaType.TEXT_PLAIN)
+                    .body(responseBody);
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
     }
 
 }
