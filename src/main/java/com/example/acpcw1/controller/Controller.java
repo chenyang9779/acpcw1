@@ -38,7 +38,7 @@ public class Controller {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @PostMapping("/valuemanager/{key}/{value}")
+    @PostMapping(path={"/valuemanager/{key}/{value}", "/valuemanager/{key}", "/valuemanager/{key}/"})
     public ResponseEntity<Void> postValueManager(@PathVariable String key, @PathVariable(required = false) String value) {
         if (key == null || key.trim().isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Return 404 if key is null or empty
@@ -55,16 +55,6 @@ public class Controller {
         // Return 200 OK
     }
 
-    @PostMapping(path = {"/valuemanager/{key}", "/valuemanager/{key}/"})
-    public ResponseEntity<Void> postValueManagerWithNullValue(@PathVariable String key) {
-        if (key == null || key.trim().isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Return 404 if key is null or empty
-        }
-
-        // Store the key with a null value
-        store.put(key, null);
-        return ResponseEntity.status(HttpStatus.OK).build(); // Return 200 OK
-    }
 
     @DeleteMapping("/valuemanager/{key}")
     public ResponseEntity<Void> deleteValueManager(@PathVariable String key) {
